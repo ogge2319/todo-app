@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Todo App</h1>
+        <form id="todo-form">
+            <input type="text" id="todo-text" placeholder="Add a todo" required autocomplete="off">
+            <select id="todo-priority" required>
+                <option value="" disabled selected>Priority</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+            <input type="text" id="todo-text" placeholder="dd-mm-yyyy" required autocomplete="off">
+            <button type="submit">Add</button>
+        </form>
+
+        <ul id="todo-list"></ul>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
