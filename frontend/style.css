@@ -101,7 +101,9 @@ button:active {
     padding: 0;
 }
 
-
+.login-container{
+    margin-right: 40px;
+}
 .todo-item {
     display: flex;
     justify-content: space-between;
@@ -126,3 +128,19 @@ button:active {
     margin-right: 10px;
     word-wrap: break-word;
 }
+.login-container {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #3a3a3a;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.secret-data-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #3a3a3a;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
