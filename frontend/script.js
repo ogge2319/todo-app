@@ -1,9 +1,10 @@
 const apiUrl = "http://localhost:3000"; // Backend URL
+let token = null;
 
 // Fetch ToDos
 async function fetchTodos() {
     const todoList = document.getElementById("todo-list");
-    todoList.innerHTML = ""; 
+    todoList.innerHTML = "";
 
     const response = await fetch(`${apiUrl}/todos`);
     const data = await response.json();
@@ -37,7 +38,9 @@ async function fetchTodos() {
 
 // Fetch todos on page load
 window.addEventListener("DOMContentLoaded", async () => {
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzMzNDI5MzgwLCJleHAiOjE3MzM0MzI5ODB9.J-5KlYDHRjobanrRIg8quvfUYI_2gBK5hxUS_ddixo0"; // Ange manuellt en giltig token här
     await fetchTodos();
+
 });
 
 // Add new ToDo
@@ -54,6 +57,7 @@ document.getElementById("todo-form").addEventListener("submit", async (event) =>
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(newTodo),
     });
@@ -72,12 +76,12 @@ async function editTodo(todo) {
     const newPriority = prompt("Enter new priority (low, medium, high):", todo.priority);
     const newDeadline = prompt("Enter new deadline (yyyy-mm-dd):", todo.deadline);
 
-     // Validation
-     const validPriorities = ["low", "medium", "high"];
-     if (!validPriorities.includes(newPriority)) {
-         alert("Invalid priority! Priority must be 'low', 'medium', or 'high'.");
-         return;
-     }
+    // Validation
+    const validPriorities = ["low", "medium", "high"];
+    if (!validPriorities.includes(newPriority)) {
+        alert("Invalid priority! Priority must be 'low', 'medium', or 'high'.");
+        return;
+    }
 
     if (newText && newPriority && newDeadline) {
         const updatedTodo = { text: newText, priority: newPriority, deadline: newDeadline };
@@ -115,3 +119,71 @@ async function deleteTodo(todoId) {
         }
     }
 }
+// Login
+document.getElementById("login-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    try {
+        const response = await fetch(`${apiUrl}/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            token = data.token; // Spara token
+            document.getElementById("login-message").textContent = "Inloggning lyckades!";
+            document.querySelector(".todo-container").style.display = "block"; // Visa todo-sektionen
+            document.querySelector(".secret-data-container").style.display = "block"; // Visa skyddad data-sektionen
+        } else {
+            document.getElementById("login-message").textContent = "Felaktigt användarnamn eller lösenord.";
+        }
+    } catch (error) {
+        document.getElementById("login-message").textContent = "Ett fel inträffade vid inloggning.";
+        console.error("Login error:", error);
+    }
+});
+
+// Secret Data
+document.getElementById("fetch-secret-data").addEventListener("click", async () => {
+    if (!token) {
+        alert("Du måste vara inloggad för att hämta skyddad data!");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${apiUrl}/secret-data`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`, // Skicka token i Authorization-headern
+            },
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            const secretDataList = document.getElementById("secret-data-list");
+            secretDataList.innerHTML = ""; // Rensa listan först
+
+            data.data.forEach((item) => {
+                const li = document.createElement("li");
+                li.textContent = item.info;
+                secretDataList.appendChild(li);
+            });
+
+            alert("Skyddad data hämtades framgångsrikt!");
+        } else {
+            alert("Misslyckades att hämta skyddad data: " + data.message);
+        }
+    } catch (error) {
+        console.error("Error fetching secret data:", error);
+        alert("Ett fel inträffade vid hämtning av skyddad data.");
+    }
+});
