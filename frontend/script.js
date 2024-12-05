@@ -72,6 +72,13 @@ async function editTodo(todo) {
     const newPriority = prompt("Enter new priority (low, medium, high):", todo.priority);
     const newDeadline = prompt("Enter new deadline (yyyy-mm-dd):", todo.deadline);
 
+     // Validation
+     const validPriorities = ["low", "medium", "high"];
+     if (!validPriorities.includes(newPriority)) {
+         alert("Invalid priority! Priority must be 'low', 'medium', or 'high'.");
+         return;
+     }
+
     if (newText && newPriority && newDeadline) {
         const updatedTodo = { text: newText, priority: newPriority, deadline: newDeadline };
 
