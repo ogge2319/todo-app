@@ -91,6 +91,15 @@ app.patch("/:todoid", async (req, res) => {
     const todoId = req.params.todoid;
     const updatedTodo = req.body;
 
+    
+    const validPriorities = ["low", "medium", "high"];
+    if (!validPriorities.includes(updatedTodo.priority)) {
+        return res.status(400).send({
+            success: false,
+            message: "Invalid priority. Priority must be 'low', 'medium', or 'high'.",
+        });
+    }
+
     try {
         const result = await Todo.findByIdAndUpdate(todoId, updatedTodo, {
             new: true
